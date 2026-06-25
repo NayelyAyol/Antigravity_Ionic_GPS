@@ -1,0 +1,7 @@
+{
+  "name": "GPS_Ionic_AG",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

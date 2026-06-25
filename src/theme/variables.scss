@@ -1,2 +1,117 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+
+:root {
+  /** primary **/
+  --ion-color-primary: #5d4037; /* Café oscuro elegante */
+  --ion-color-primary-rgb: 93, 64, 55;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #523830;
+  --ion-color-primary-tint: #6d534b;
+
+  /** secondary **/
+  --ion-color-secondary: #8d6e63; /* Café claro/medio (café con leche) */
+  --ion-color-secondary-rgb: 141, 110, 99;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #7c6157;
+  --ion-color-secondary-tint: #987d73;
+
+  /** tertiary **/
+  --ion-color-tertiary: #d4a373; /* Amarillo desaturado / Arena */
+  --ion-color-tertiary-rgb: 212, 163, 115;
+  --ion-color-tertiary-contrast: #3e2723;
+  --ion-color-tertiary-contrast-rgb: 62, 39, 35;
+  --ion-color-tertiary-shade: #bb8f65;
+  --ion-color-tertiary-tint: #d8ac81;
+
+  /** success (active tracking color) **/
+  --ion-color-success: #5d4037; /* Usamos el tono café para éxitos */
+  --ion-color-success-rgb: 93, 64, 55;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #523830;
+  --ion-color-success-tint: #6d534b;
+
+  /** warning **/
+  --ion-color-warning: #f5b041; /* Amarillo no muy saturado */
+  --ion-color-warning-rgb: 245, 176, 65;
+  --ion-color-warning-contrast: #3e2723;
+  --ion-color-warning-contrast-rgb: 62, 39, 35;
+  --ion-color-warning-shade: #d79a39;
+  --ion-color-warning-tint: #f7b854;
+
+  /** danger **/
+  --ion-color-danger: #a93226; /* Rojo café suave / arcilla */
+  --ion-color-danger-rgb: 169, 50, 38;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #952c21;
+  --ion-color-danger-tint: #b2473c;
+
+  /** light **/
+  --ion-color-light: #f5ebe0; /* Crema suave */
+  --ion-color-light-rgb: 245, 235, 224;
+  --ion-color-light-contrast: #3e2723;
+  --ion-color-light-contrast-rgb: 62, 39, 35;
+  --ion-color-light-shade: #d8cfc5;
+  --ion-color-light-tint: #f6ede3;
+
+  /** dark **/
+  --ion-color-dark: #3e2723; /* Café oscuro casi negro */
+  --ion-color-dark-rgb: 62, 39, 35;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #37221f;
+  --ion-color-dark-tint: #513d39;
+
+  /** App background and text colors **/
+  --ion-background-color: #faf6ee; /* Fondo crema / amarillo suave no saturado */
+  --ion-background-color-rgb: 250, 246, 238;
+
+  --ion-text-color: #3e2723; /* Texto café oscuro */
+  --ion-text-color-rgb: 62, 39, 35;
+
+  --ion-card-background: #ffffff;
+}
+
+/* Ajustes de Dark Mode elegantes en tonos café oscuro */
+@media (prefers-color-scheme: dark) {
+  body {
+    --ion-background-color: #1e1512; /* Café ultra oscuro */
+    --ion-background-color-rgb: 30, 21, 18;
+
+    --ion-text-color: #f5ebe0; /* Crema claro para texto */
+    --ion-text-color-rgb: 245, 235, 224;
+
+    --ion-card-background: #2a1f1b; /* Café oscuro para tarjetas */
+
+    --ion-color-step-50: #241a17;
+    --ion-color-step-100: #2b1f1a;
+    --ion-color-step-150: #31241f;
+    --ion-color-step-200: #372923;
+    --ion-color-step-250: #3d2f28;
+    --ion-color-step-300: #44342d;
+    --ion-color-step-350: #4a3931;
+    --ion-color-step-400: #503e36;
+    --ion-color-step-450: #56433b;
+    --ion-color-step-500: #5c4840;
+    --ion-color-step-550: #624e45;
+    --ion-color-step-600: #69534a;
+    --ion-color-step-650: #6f584f;
+    --ion-color-step-700: #755d54;
+    --ion-color-step-750: #7b6259;
+    --ion-color-step-800: #81675d;
+    --ion-color-step-850: #876d62;
+    --ion-color-step-900: #8d7267;
+    --ion-color-step-950: #93776c;
+
+    --ion-color-primary: #d4a373; /* Intercambiamos primario en dark mode a un tono ocre más visible */
+    --ion-color-primary-rgb: 212, 163, 115;
+    --ion-color-primary-contrast: #1e1512;
+    --ion-color-primary-contrast-rgb: 30, 21, 18;
+    --ion-color-primary-shade: #bb8f65;
+    --ion-color-primary-tint: #d8ac81;
+  }
+}

@@ -1,27 +1,189 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Inbox
+  <ion-toolbar color="primary">
+    <ion-title class="app-title">
+      <ion-icon name="locate" class="title-icon"></ion-icon>
+      Rastreador GPS
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Panel de Estado Rápido -->
+  <div class="status-panel">
+    <div class="status-chip" [class.active]="permissionState === 'granted'">
+      <ion-icon [name]="permissionState === 'granted' ? 'checkmark-circle' : 'alert-circle'"></ion-icon>
+      <ion-label>Permiso: {{ permissionState === 'granted' ? 'OK' : 'Inactivo' }}</ion-label>
+    </div>
+    <div class="status-chip" [class.active]="isTracking">
+      <ion-icon [name]="isTracking ? 'refresh-circle' : 'stop'"></ion-icon>
+      <ion-label>Tracking: {{ isTracking ? 'Activo' : 'Pausado' }}</ion-label>
+    </div>
+  </div>
 
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">
-        Inbox
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Tarjeta Central de Coordenadas -->
+  <ion-card class="coordinates-card">
+    <ion-card-header>
+      <div class="card-header-flex">
+        <div>
+          <ion-card-subtitle class="card-subtitle-custom">Ubicación Actual</ion-card-subtitle>
+          <ion-card-title class="card-title-custom">Coordenadas Satelitales</ion-card-title>
+        </div>
+        <ion-badge [color]="isTracking ? 'success' : 'warning'" class="tracking-badge">
+          {{ isTracking ? 'Seguimiento Activo' : 'Pausado' }}
+        </ion-badge>
+      </div>
+    </ion-card-header>
 
-  <ion-list>
-    @for (message of getMessages(); track message) {
-      <app-message [message]="message"></app-message>
+    <ion-card-content>
+      @if (currentPosition) {
+        <div class="coord-display-container">
+          <div class="coord-row">
+            <div class="coord-icon-box">
+              <ion-icon name="locate" color="primary"></ion-icon>
+            </div>
+            <div class="coord-info">
+              <span class="coord-label">Latitud</span>
+              <span class="coord-value">{{ currentPosition.latitude.toFixed(6) }}</span>
+            </div>
+          </div>
+
+          <div class="coord-divider"></div>
+
+          <div class="coord-row">
+            <div class="coord-icon-box">
+              <ion-icon name="locate" color="primary"></ion-icon>
+            </div>
+            <div class="coord-info">
+              <span class="coord-label">Longitud</span>
+              <span class="coord-value">{{ currentPosition.longitude.toFixed(6) }}</span>
+            </div>
+          </div>
+
+          <div class="coord-divider"></div>
+
+          <div class="coord-meta-grid">
+            <div class="coord-meta-item">
+              <ion-icon name="checkmark-circle" color="secondary"></ion-icon>
+              <div>
+                <span class="meta-label">Precisión</span>
+                <span class="meta-value">±{{ currentPosition.accuracy.toFixed(1) }} m</span>
+              </div>
+            </div>
+            <div class="coord-meta-item">
+              <ion-icon name="time" color="secondary"></ion-icon>
+              <div>
+                <span class="meta-label">Actualizado</span>
+                <span class="meta-value">{{ currentPosition.timestamp.split(' ')[1] || currentPosition.timestamp }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones Rápidas sobre la Ubicación -->
+          <div class="location-actions">
+            <ion-button fill="outline" color="primary" size="small" class="action-btn" (click)="copyCoordinates()">
+              <ion-icon slot="start" name="copy"></ion-icon>
+              Copiar
+            </ion-button>
+            <ion-button fill="outline" color="secondary" size="small" class="action-btn" (click)="openInMaps()">
+              <ion-icon slot="start" name="map"></ion-icon>
+              Ver Mapa
+            </ion-button>
+          </div>
+        </div>
+      } @else {
+        <div class="no-coords-state">
+          <div class="empty-icon-container">
+            <ion-icon name="locate" class="empty-icon"></ion-icon>
+          </div>
+          <h3>Sin coordenadas</h3>
+          <p>Presiona el botón inferior para obtener tu ubicación GPS en tiempo real.</p>
+        </div>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botones de Control Principal -->
+  <div class="controls-container">
+    @if (!isTracking) {
+      <ion-button expand="block" shape="round" color="primary" class="main-btn tracking-btn" (click)="startTracking()">
+        <ion-icon slot="start" name="play"></ion-icon>
+        INICIAR SEGUIMIENTO GPS
+      </ion-button>
+      <ion-button expand="block" shape="round" fill="clear" color="secondary" class="sub-btn" (click)="getCurrentLocation()">
+        <ion-icon slot="start" name="locate"></ion-icon>
+        Obtener Ubicación Única
+      </ion-button>
+    } @else {
+      <ion-button expand="block" shape="round" color="danger" class="main-btn stop-btn" (click)="stopTracking()">
+        <ion-icon slot="start" name="stop"></ion-icon>
+        DETENER SEGUIMIENTO
+      </ion-button>
     }
-  </ion-list>
+  </div>
+
+  <!-- Banner Informativo de Segundo Plano -->
+  @if (isTracking) {
+    <div class="background-info-banner animate-fade-in">
+      <ion-icon name="alert-circle" color="primary"></ion-icon>
+      <div class="banner-text">
+        <h4>Rastreo en Segundo Plano Activo</h4>
+        <p>Puedes minimizar la aplicación y bloquear tu dispositivo. Las ubicaciones se seguirán registrando en el historial.</p>
+      </div>
+    </div>
+  }
+
+  <!-- Mensajes de Error -->
+  @if (errorMessage) {
+    <div class="error-banner animate-fade-in">
+      <ion-icon name="alert-circle" color="danger"></ion-icon>
+      <div class="banner-text">
+        <h4>Error de GPS / Permisos</h4>
+        <p>{{ errorMessage }}</p>
+      </div>
+      @if (permissionState !== 'granted') {
+        <ion-button fill="clear" size="small" color="danger" (click)="requestPermissions()">
+          Activar
+        </ion-button>
+      }
+    </div>
+  }
+
+  <!-- Historial de Ubicaciones -->
+  @if (history.length > 0) {
+    <ion-card class="history-card">
+      <ion-card-header class="history-header">
+        <div class="history-title-box">
+          <ion-icon name="time" class="history-title-icon"></ion-icon>
+          <ion-card-title class="history-title">Historial GPS ({{ history.length }} pts)</ion-card-title>
+        </div>
+        <ion-button fill="clear" size="small" color="primary" class="history-clear-btn" (click)="clearHistory()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-card-header>
+
+      <ion-card-content class="history-content">
+        <ion-list lines="full" class="history-list">
+          @for (point of history.slice(0, 10); track point.timestamp; let idx = $index) {
+            <ion-item class="history-item">
+              <div class="history-marker" slot="start">
+                <span>#{{ history.length - idx }}</span>
+              </div>
+              <ion-label>
+                <h2>{{ point.latitude.toFixed(6) }}, {{ point.longitude.toFixed(6) }}</h2>
+                <p>Precisión: ±{{ point.accuracy.toFixed(1) }} m</p>
+              </ion-label>
+              <ion-note slot="end" class="history-time-note">
+                {{ point.timestamp.split(' ')[1] || point.timestamp }}
+              </ion-note>
+            </ion-item>
+          }
+        </ion-list>
+        @if (history.length > 10) {
+          <div class="history-footer">
+            <p>Mostrando los últimos 10 de {{ history.length }} registros</p>
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+  }
 </ion-content>
